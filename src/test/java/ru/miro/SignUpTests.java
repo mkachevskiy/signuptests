@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import ru.miro.pages.EmailConfirmPage;
 import ru.miro.pages.SignUpPage;
@@ -34,25 +35,26 @@ public class SignUpTests {
     @Test
     public void tryToSighUpWithEmptyFields() {
         signUpPage.submitForm();
-        Assertions.assertAll("Form validations doesn't work on the page", () -> Assertions.assertEquals("Please enter your name.", signUpPage.getNameError().getText()), () -> Assertions.assertTrue(signUpPage.getNameError().isDisplayed()), () -> Assertions.assertEquals("Enter your email address.", signUpPage.getEmailError().getText()), () -> Assertions.assertTrue(signUpPage.getEmailError().isDisplayed()), () -> Assertions.assertEquals("Enter your password.", signUpPage.getPasswordError().getText()), () -> Assertions.assertTrue(signUpPage.getPasswordError().isDisplayed()), () -> Assertions.assertEquals("Please agree with the Terms to sign up.", signUpPage.getTermsError().getText()), () -> Assertions.assertTrue(signUpPage.getTermsError().isDisplayed()));
+        Assertions.assertAll("Form validations doesn't work on the page",
+                    () -> Assertions.assertEquals("Please enter your name.", signUpPage.getNameError().getText()),
+                    () -> Assertions.assertTrue(signUpPage.getNameError().isDisplayed()),
+                    () -> Assertions.assertEquals("Enter your email address.", signUpPage.getEmailError().getText()),
+                    () -> Assertions.assertTrue(signUpPage.getEmailError().isDisplayed()),
+                    () -> Assertions.assertEquals("Enter your password.", signUpPage.getPasswordError().getText()),
+                    () -> Assertions.assertTrue(signUpPage.getPasswordError().isDisplayed()),
+                    () -> Assertions.assertEquals("Please agree with the Terms to sign up.", signUpPage.getTermsError().getText()),
+                    () -> Assertions.assertTrue(signUpPage.getTermsError().isDisplayed()));
     }
 
-    @Test
-    public void verifyPasswordHints() {
-        signUpPage.enterPassword("1234");
-        Assertions.assertEquals("Please use 8+ characters for secure password.", signUpPage.getPasswordHint().shouldBe(Condition.visible).getText());
-
-        signUpPage.enterPassword("12345678");
-        Assertions.assertEquals("Weak password", signUpPage.getPasswordHint().shouldBe(Condition.visible).getText());
-
-        signUpPage.enterPassword("sdfsd5678");
-        Assertions.assertEquals("So-so password", signUpPage.getPasswordHint().shouldBe(Condition.visible).getText());
-
-        signUpPage.enterPassword("ASDzxc!@#");
-        Assertions.assertEquals("Good password", signUpPage.getPasswordHint().shouldBe(Condition.visible).getText());
-
-        signUpPage.enterPassword("ASDzxc!@#123");
-        Assertions.assertEquals("Great password", signUpPage.getPasswordHint().shouldBe(Condition.visible).getText());
+    @ParameterizedTest
+    @CsvSource({"1234 , Please use 8+ characters for secure password.",
+                "12345678, Weak password",
+                "sdfsd5678, So-so password",
+                "ASDzxc!@#, Good password",
+                "ASDzxc!@#123, Great password"})
+    public void verifyPasswordHints(String pass, String passHint) {
+        signUpPage.enterPassword(pass);
+        Assertions.assertEquals(passHint, signUpPage.getPasswordHint().shouldBe(Condition.visible).getText());
     }
 
     @ParameterizedTest
