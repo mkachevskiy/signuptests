@@ -11,6 +11,7 @@ repositories {
 
 dependencies {
     implementation("com.codeborne:selenide:6.10.1")
+    implementation("commons-io:commons-io:2.11.0")
 
     testImplementation("com.github.javafaker:javafaker:1.0.2")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
