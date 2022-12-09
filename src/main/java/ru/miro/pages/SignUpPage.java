@@ -12,7 +12,9 @@ public class SignUpPage {
     private final SelenideElement emailInput = $(byId("email"));
     private final SelenideElement passwordInput = $(byId("password"));
     private final SelenideElement termsInput = $(byClassName("mr-checkbox-1__check"));
-    private final SelenideElement submitButton = $(byClassName("signup__submit"));
+    private final SelenideElement submitEmailButton = $(byXpath("//button[@data-testid='mr-form-signup-btn-start-1']"));
+    private final SelenideElement submitNameButton = $(byXpath("//button[@data-testid='mr-form-signup-btn-start-2']"));
+    private final SelenideElement submitPasswordButton = $(byXpath("//button[@data-testid='mr-form-signup-btn-start-3']"));
 
     @Getter
     private final SelenideElement nameError = $(byId("nameError"));
@@ -28,11 +30,13 @@ public class SignUpPage {
     public void enterName(String name) {
         nameInput.shouldBe(Condition.visible).clear();
         nameInput.shouldBe(Condition.visible).setValue(name);
+        submitNameButton.shouldBe(Condition.visible).click();
     }
 
     public void enterEmail(String email) {
         emailInput.shouldBe(Condition.visible).clear();
         emailInput.shouldBe(Condition.visible).setValue(email);
+        submitEmailButton.shouldBe(Condition.visible).click();
     }
 
     public void enterPassword(String password) {
@@ -40,17 +44,17 @@ public class SignUpPage {
         passwordInput.shouldBe(Condition.visible).setValue(password);
     }
 
-    public void submitForm() {
-        submitButton.shouldBe(Condition.visible).click();
+    public void submitPasswordForm() {
+        submitPasswordButton.shouldBe(Condition.visible).click();
     }
 
     public EmailConfirmPage signUp(String name, String email, String password) {
-        enterName(name);
         enterEmail(email);
-        enterPassword(password);
+        enterName(name);
 
+        enterPassword(password);
         termsInput.shouldBe(Condition.visible).click();
-        submitForm();
+        submitPasswordForm();
 
         return new EmailConfirmPage();
     }
